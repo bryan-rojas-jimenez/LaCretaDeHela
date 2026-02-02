@@ -8,13 +8,17 @@ import {
   Users, 
   Truck, 
   Receipt, 
-  History 
+  History,
+  TrendingUp,
+  ShoppingCart
 } from "lucide-react";
 
 export function Navbar() {
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/deals", label: "Sales Pipeline", icon: TrendingUp },
     { href: "/inventory", label: "Inventory", icon: ListTodo },
+    { href: "/procurement", label: "Procurement", icon: ShoppingCart },
     { href: "/projects", label: "Projects", icon: FolderCheck },
     { href: "/bi-studio", label: "BI Studio", icon: BrainCircuit },
     { href: "/crm", label: "CRM", icon: Users },

@@ -51,7 +51,11 @@ export async function addSupplierFile(supplierId: number, fileName: string) {
 export async function getCustomers() {
   return await db.customer.findMany({ 
     include: { 
-      _count: { select: { projects: true, invoices: true, files: true } } 
+      _count: { select: { projects: true, invoices: true, files: true, deals: true } },
+      projects: true,
+      invoices: true,
+      deals: true,
+      files: true
     } 
   });
 }

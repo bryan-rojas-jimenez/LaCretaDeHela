@@ -39,15 +39,16 @@ model Transaction {
 }
 
 model Supplier {
-  id        Int             @id @default(autoincrement())
-  name      String
-  contact   String?
-  email     String?
-  address   String?
-  taxId     String?
-  items     InventoryItem[]
-  files     SupplierFile[]
-  createdAt DateTime        @default(now())
+  id             Int             @id @default(autoincrement())
+  name           String
+  contact        String?
+  email          String?
+  address        String?
+  taxId          String?
+  items          InventoryItem[]
+  files          SupplierFile[]
+  purchaseOrders PurchaseOrder[]
+  createdAt      DateTime        @default(now())
 }
 
 model SupplierFile {
@@ -70,8 +71,41 @@ model Customer {
   accountNumber   String?        @unique
   projects        Project[]
   invoices        Invoice[]
+  deals           Deal[]
   files           CustomerFile[]
   createdAt       DateTime       @default(now())
+}
+
+model Deal {
+  id          Int      @id @default(autoincrement())
+  title       String
+  value       Float
+  status      String   @default("LEAD") // LEAD, PROPOSAL, NEGOTIATION, CLOSED_WON, CLOSED_LOST
+  customerId  Int
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  files       DealFile[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model DealFile {
+  id        Int      @id @default(autoincrement())
+  name      String
+  path      String
+  dealId    Int
+  deal      Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model PurchaseOrder {
+  id          Int      @id @default(autoincrement())
+  orderNumber String   @unique
+  status      String   @default("DRAFT") // DRAFT, SENT, RECEIVED, CANCELLED
+  total       Float    @default(0)
+  supplierId  Int
+  supplier    Supplier @relation(fields: [supplierId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model CustomerFile {

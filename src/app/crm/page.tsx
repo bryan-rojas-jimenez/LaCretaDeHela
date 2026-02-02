@@ -2,8 +2,17 @@ import { getCustomers } from "@/lib/actions/relationships";
 import { AddCustomerForm } from "@/components/crm/AddCustomerForm";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { EntityFiles } from "@/components/relationships/EntityFiles";
-import { Users, Mail, Phone, MapPin, Hash, Star } from "lucide-react";
+import { Customer360 } from "@/components/crm/Customer360";
+import { Users, Mail, Phone, MapPin, Hash, Star, History } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 export default async function CRMPage() {
   const customers = await getCustomers();
@@ -32,12 +41,27 @@ export default async function CRMPage() {
             {customers.map((customer) => (
               <TableRow key={customer.id} className="hover:bg-slate-50/50 align-top">
                 <TableCell>
-                  <div className="flex flex-col">
+                  <div className="flex flex-col gap-2">
                     <span className="font-bold text-slate-900">{customer.firstName} {customer.lastName}</span>
-                    <span className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-                      <Hash className="h-3 w-3" /> {customer.accountNumber || "No ID Assigned"}
-                    </span>
-                    <Badge className="w-fit mt-2 bg-pink-100 text-pink-700 hover:bg-pink-100 border-none">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Hash className="h-3 w-3" /> {customer.accountNumber || "No ID"}
+                      </span>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-6 px-2 text-[10px] gap-1 hover:bg-blue-50 hover:text-blue-600">
+                            <History className="h-3 w-3" /> Timeline
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                          <DialogHeader>
+                            <DialogTitle>Customer History: {customer.firstName} {customer.lastName}</DialogTitle>
+                          </DialogHeader>
+                          <Customer360 customer={customer} />
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+                    <Badge className="w-fit mt-1 bg-pink-100 text-pink-700 hover:bg-pink-100 border-none">
                       <Star className="h-3 w-3 mr-1 fill-pink-700" /> {customer.loyaltyPoints} Points
                     </Badge>
                   </div>
