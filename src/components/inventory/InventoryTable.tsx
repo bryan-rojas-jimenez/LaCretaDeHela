@@ -19,7 +19,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { updateStock } from "@/lib/actions/inventory";
-import { Download, Search } from "lucide-react";
+import { Download, Search, QrCode } from "lucide-react";
+import { QRCodeDialog } from "./QRCodeDialog";
 
 interface Item {
   id: number;
@@ -130,6 +131,7 @@ export function InventoryTable({ items }: { items: Item[] }) {
                   </span>
                 </TableCell>
                 <TableCell className="text-right space-x-2">
+                  <QRCodeDialog sku={item.sku} itemName={item.name} />
                   <Button variant="outline" size="sm" onClick={() => handleStockUpdate(item.id, "IN")}>
                     Stock In
                   </Button>

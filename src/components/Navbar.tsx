@@ -10,7 +10,8 @@ import {
   Receipt, 
   History,
   TrendingUp,
-  ShoppingCart
+  ShoppingCart,
+  Maximize
 } from "lucide-react";
 
 export function Navbar() {
@@ -18,6 +19,7 @@ export function Navbar() {
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/deals", label: "Sales Pipeline", icon: TrendingUp },
     { href: "/inventory", label: "Inventory", icon: ListTodo },
+    { href: "/scan-station", label: "Scan Station", icon: Maximize },
     { href: "/procurement", label: "Procurement", icon: ShoppingCart },
     { href: "/projects", label: "Projects", icon: FolderCheck },
     { href: "/bi-studio", label: "BI Studio", icon: BrainCircuit },

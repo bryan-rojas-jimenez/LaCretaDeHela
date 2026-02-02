@@ -1,5 +1,14 @@
 "use server";
 
+/**
+ * INVENTORY ACTIONS
+ * These actions handle the core product lifecycle.
+ * Pattern:
+ * 1. Database operation (Prisma)
+ * 2. Audit Logging (for transparency)
+ * 3. Cache Revalidation (updates UI in real-time)
+ */
+
 import db from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { logAction } from "./audit";

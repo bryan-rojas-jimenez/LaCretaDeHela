@@ -1,3 +1,12 @@
+/**
+ * ELECTRON ENTRY POINT
+ * This file bootstraps the desktop environment and integrates the Next.js server.
+ * Strategy:
+ * 1. Start a local HTTP server using the Next.js request handler.
+ * 2. Launch a BrowserWindow (Chromium) pointed at that local server.
+ * 3. Manage the application lifecycle (ready, closed, etc.).
+ */
+
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const isDev = require('electron-is-dev') === true;
