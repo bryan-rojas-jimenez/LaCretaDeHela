@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Package2, LayoutDashboard, ListTodo, FolderCheck } from "lucide-react";
+import { Package2, LayoutDashboard, ListTodo, FolderCheck, BrainCircuit } from "lucide-react";
 
 export function Navbar() {
   return (
@@ -33,6 +33,13 @@ export function Navbar() {
             >
               <FolderCheck className="h-4 w-4" />
               Projects
+            </Link>
+            <Link
+              href="/bi-studio"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+            >
+              <BrainCircuit className="h-4 w-4" />
+              BI Studio
             </Link>
           </nav>
         </div>

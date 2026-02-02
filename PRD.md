@@ -41,6 +41,12 @@ To provide a lightweight, scalable, and intuitive platform that bridges the gap 
 - **Task Management:** Create tasks with specific priorities (Low, Medium, High, Urgent) and statuses.
 - **Status Progression:** One-click status updates to move tasks through the workflow.
 
+### 5.5 BI Studio (Business Intelligence)
+- **Unified Analysis:** Cross-functional data correlation between Inventory and Project workflows.
+- **Dynamic Charting:** Interactive Area, Bar, and Pie charts for asset valuation and project health.
+- **Strategic Visualization:** Real-time project completion tracking and category-based financial distribution.
+- **Intelligence Engine:** Aggregated business metrics derived from all operational modules.
+
 ## 6. User Interface (UX/UI)
 - **Design System:** Professional "Slate" theme with high-contrast typography.
 - **Navigation:** Persistent sidebar for seamless switching between Dashboard and Inventory modules.
