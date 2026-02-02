@@ -4,11 +4,19 @@ import db from "@/lib/db";
 
 export async function getDashboardStats() {
   try {
-    const items = await db.inventoryItem.findMany();
+    const [items, customers, invoices] = await Promise.all([
+      db.inventoryItem.findMany(),
+      db.customer.findMany(),
+      db.invoice.findMany()
+    ]);
     
     const totalItems = items.length;
     const totalStockValue = items.reduce((acc, item) => acc + (item.quantity * item.price), 0);
     const lowStockItems = items.filter(item => item.quantity < 5).length;
+
+    const totalCustomers = customers.length;
+    const totalInvoiced = invoices.reduce((acc, inv) => acc + inv.total, 0);
+    const pendingInvoices = invoices.filter(inv => inv.status === "UNPAID").length;
 
     // Aggregate by category for the chart
     const categoryDataMap = items.reduce((acc: any, item) => {
@@ -28,6 +36,9 @@ export async function getDashboardStats() {
       totalItems,
       totalStockValue,
       lowStockItems,
+      totalCustomers,
+      totalInvoiced,
+      pendingInvoices,
       categoryData
     };
   } catch (error) {
@@ -36,6 +47,9 @@ export async function getDashboardStats() {
       totalItems: 0,
       totalStockValue: 0,
       lowStockItems: 0,
+      totalCustomers: 0,
+      totalInvoiced: 0,
+      pendingInvoices: 0,
       categoryData: []
     };
   }

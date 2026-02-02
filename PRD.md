@@ -43,9 +43,20 @@ To provide a lightweight, scalable, and intuitive platform that bridges the gap 
 
 ### 5.5 BI Studio (Business Intelligence)
 - **Unified Analysis:** Cross-functional data correlation between Inventory and Project workflows.
-- **Dynamic Charting:** Interactive Area, Bar, and Pie charts for asset valuation and project health.
 - **Strategic Visualization:** Real-time project completion tracking and category-based financial distribution.
-- **Intelligence Engine:** Aggregated business metrics derived from all operational modules.
+
+### 5.6 Relationship Management (CRM & Suppliers)
+- **CRM:** Centralized database for clients with tracking for linked projects and invoicing history.
+- **Suppliers:** Vendor management system with direct linking to inventory stock.
+
+### 5.7 Financials & Invoicing
+- **Invoice Generation:** Create professional billing records with unique tracking numbers and automated totals.
+- **Payment Tracking:** Monitor the status (Paid/Unpaid) and due dates for all client billings.
+
+### 5.8 Governance & Security
+- **Audit Log:** Comprehensive immutable record of every system action (who did what and when).
+- **File Management:** Secure document storage linked directly to specific projects.
+
 
 ## 6. User Interface (UX/UI)
 - **Design System:** Professional "Slate" theme with high-contrast typography.

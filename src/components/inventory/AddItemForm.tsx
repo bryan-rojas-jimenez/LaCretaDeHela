@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createInventoryItem } from "@/lib/actions/inventory";
+import { getSuppliers } from "@/lib/actions/relationships";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,10 +13,24 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function AddItemForm() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [suppliers, setSuppliers] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (open) {
+      getSuppliers().then(setSuppliers);
+    }
+  }, [open]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -28,6 +43,7 @@ export function AddItemForm() {
       quantity: parseInt(formData.get("quantity") as string),
       price: parseFloat(formData.get("price") as string),
       category: formData.get("category") as string,
+      supplierId: formData.get("supplierId") ? parseInt(formData.get("supplierId") as string) : undefined,
     };
 
     const result = await createInventoryItem(data);
@@ -43,7 +59,7 @@ export function AddItemForm() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Add Item</Button>
+        <Button className="bg-blue-600 hover:bg-blue-700">Add Item</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -54,9 +70,15 @@ export function AddItemForm() {
             <Label htmlFor="name">Name</Label>
             <Input id="name" name="name" required />
           </div>
-          <div>
-            <Label htmlFor="sku">SKU</Label>
-            <Input id="sku" name="sku" required />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="sku">SKU</Label>
+              <Input id="sku" name="sku" required />
+            </div>
+            <div>
+              <Label htmlFor="category">Category</Label>
+              <Input id="category" name="category" required />
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -69,10 +91,19 @@ export function AddItemForm() {
             </div>
           </div>
           <div>
-            <Label htmlFor="category">Category</Label>
-            <Input id="category" name="category" required />
+            <Label htmlFor="supplierId">Supplier (Optional)</Label>
+            <Select name="supplierId">
+              <SelectTrigger>
+                <SelectValue placeholder="Select a supplier" />
+              </SelectTrigger>
+              <SelectContent>
+                {suppliers.map((s) => (
+                  <SelectItem key={s.id} value={s.id.toString()}>{s.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full bg-blue-600" disabled={loading}>
             {loading ? "Adding..." : "Add Item"}
           </Button>
         </form>

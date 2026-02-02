@@ -2,6 +2,7 @@
 
 import db from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { logAction } from "./audit";
 
 export async function getInventoryItems() {
   try {
@@ -21,6 +22,7 @@ export async function createInventoryItem(formData: {
   quantity: number;
   price: number;
   category: string;
+  supplierId?: number;
 }) {
   try {
     const item = await db.inventoryItem.create({
@@ -30,8 +32,11 @@ export async function createInventoryItem(formData: {
         quantity: formData.quantity,
         price: formData.price,
         category: formData.category,
+        supplierId: formData.supplierId,
       },
     });
+
+    await logAction("CREATE_ITEM", `Created item: ${formData.name} (SKU: ${formData.sku})`);
 
     // Create an initial transaction
     await db.transaction.create({
@@ -73,6 +78,8 @@ export async function updateStock(id: number, amount: number, type: "IN" | "OUT"
         },
       }),
     ]);
+
+    await logAction("UPDATE_STOCK", `${type} update for ${item.name}: ${amount} units. New Total: ${newQuantity}`);
 
     revalidatePath("/inventory");
     revalidatePath("/dashboard");

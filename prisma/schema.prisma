@@ -7,15 +7,25 @@ datasource db {
   url      = "file:./dev.db"
 }
 
+model User {
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
+  password  String
+  role      String     @default("VIEWER") // ADMIN, EDITOR, VIEWER
+  logs      AuditLog[]
+}
+
 model InventoryItem {
-  id          Int      @id @default(autoincrement())
-  name        String
-  sku         String   @unique
-  quantity    Int      @default(0)
-  price       Float    @default(0.0)
-  category    String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           Int           @id @default(autoincrement())
+  name         String
+  sku          String        @unique
+  quantity     Int           @default(0)
+  price        Float         @default(0.0)
+  category     String
+  supplierId   Int?
+  supplier     Supplier?     @relation(fields: [supplierId], references: [id])
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   transactions Transaction[]
 }
 
@@ -28,25 +38,76 @@ model Transaction {
   item      InventoryItem @relation(fields: [itemId], references: [id])
 }
 
+model Supplier {
+  id        Int             @id @default(autoincrement())
+  name      String
+  contact   String?
+  email     String?
+  items     InventoryItem[]
+  createdAt DateTime        @default(now())
+}
+
+model Customer {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String?
+  phone     String?
+  projects  Project[]
+  invoices  Invoice[]
+  createdAt DateTime  @default(now())
+}
+
 model Project {
-  id          Int      @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   name        String
   description String?
-  color       String   @default("#3b82f6")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  color       String        @default("#3b82f6")
+  customerId  Int?
+  customer    Customer?     @relation(fields: [customerId], references: [id])
   tasks       Task[]
+  files       ProjectFile[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model ProjectFile {
+  id        Int      @id @default(autoincrement())
+  name      String
+  path      String
+  projectId Int
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 }
 
 model Task {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   title       String
   description String?
-  status      String   @default("TODO") // TODO, IN_PROGRESS, DONE, BACKLOG
-  priority    String   @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  status      String    @default("TODO")
+  priority    String    @default("MEDIUM")
   dueDate     DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
   projectId   Int
-  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Invoice {
+  id          Int      @id @default(autoincrement())
+  number      String   @unique
+  total       Float
+  status      String   @default("UNPAID") // PAID, UNPAID, CANCELLED
+  customerId  Int
+  customer    Customer @relation(fields: [customerId], references: [id])
+  dueDate     DateTime
+  createdAt   DateTime @default(now())
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  action    String
+  details   String?
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id])
+  timestamp DateTime @default(now())
 }
