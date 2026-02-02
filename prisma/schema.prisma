@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model InventoryItem {
+  id          Int      @id @default(autoincrement())
+  name        String
+  sku         String   @unique
+  quantity    Int      @default(0)
+  price       Float    @default(0.0)
+  category    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  transactions Transaction[]
+}
+
+model Transaction {
+  id        Int           @id @default(autoincrement())
+  type      String        // "IN" or "OUT"
+  amount    Int
+  date      DateTime      @default(now())
+  itemId    Int
+  item      InventoryItem @relation(fields: [itemId], references: [id])
+}
