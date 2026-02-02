@@ -46,7 +46,7 @@ export default async function InvoicesPage() {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2 text-muted-foreground">
-                    <User className="h-3 w-3" /> {invoice.customer.name}
+                    <User className="h-3 w-3" /> {invoice.customer.firstName} {invoice.customer.lastName}
                   </div>
                 </TableCell>
                 <TableCell className="font-medium">

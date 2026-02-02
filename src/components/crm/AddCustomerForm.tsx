@@ -24,9 +24,12 @@ export function AddCustomerForm() {
 
     const formData = new FormData(event.currentTarget);
     const data = {
-      name: formData.get("name") as string,
+      firstName: formData.get("firstName") as string,
+      lastName: formData.get("lastName") as string,
       email: formData.get("email") as string,
       phone: formData.get("phone") as string,
+      address: formData.get("address") as string,
+      accountNumber: formData.get("accountNumber") as string,
     };
 
     const result = await createCustomer(data);
@@ -46,25 +49,41 @@ export function AddCustomerForm() {
           <UserPlus className="h-4 w-4" /> Add Customer
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Add New Customer</DialogTitle>
+          <DialogTitle>Add Detailed Customer Profile</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="name">Full Name</Label>
-            <Input id="name" name="name" placeholder="John Doe" required />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="firstName">First Name</Label>
+              <Input id="firstName" name="firstName" placeholder="Jane" required />
+            </div>
+            <div>
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input id="lastName" name="lastName" placeholder="Smith" required />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" name="email" type="email" placeholder="jane@example.com" />
+            </div>
+            <div>
+              <Label htmlFor="phone">Phone</Label>
+              <Input id="phone" name="phone" placeholder="+1..." />
+            </div>
           </div>
           <div>
-            <Label htmlFor="email">Email Address</Label>
-            <Input id="email" name="email" type="email" placeholder="john@example.com" />
+            <Label htmlFor="accountNumber">Account Number (Internal ID)</Label>
+            <Input id="accountNumber" name="accountNumber" placeholder="CUST-1001" />
           </div>
           <div>
-            <Label htmlFor="phone">Phone Number</Label>
-            <Input id="phone" name="phone" placeholder="+1 (555) 000-0000" />
+            <Label htmlFor="address">Physical Address</Label>
+            <Input id="address" name="address" placeholder="123 Business St, Suite 400" />
           </div>
           <Button type="submit" className="w-full bg-pink-600 hover:bg-pink-700" disabled={loading}>
-            {loading ? "Saving..." : "Save Customer"}
+            {loading ? "Creating Profile..." : "Save Customer Profile"}
           </Button>
         </form>
       </DialogContent>

@@ -7,7 +7,7 @@ import { logAction } from "./audit";
 export async function getInvoices() {
   return await db.invoice.findMany({
     include: {
-      customer: { select: { name: true, email: true } }
+      customer: { select: { firstName: true, lastName: true, email: true } }
     },
     orderBy: { createdAt: "desc" }
   });

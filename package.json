@@ -2,11 +2,38 @@
   "name": "inventory-analytics-mvp",
   "version": "0.1.0",
   "private": true,
+  "main": "main/main.js",
+  "description": "InvAnalytics - Modern ERP & Business Intelligence Suite",
+  "author": "Bryan",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "electron:dev": "electron .",
+    "electron:build": "next build && electron-builder"
+  },
+  "build": {
+    "appId": "com.invanalytics.erp",
+    "productName": "InvAnalytics",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main/**/*",
+      ".next/**/*",
+      "public/**/*",
+      "prisma/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.business",
+      "target": "dmg"
+    },
+    "win": {
+      "target": "nsis"
+    }
   },
   "dependencies": {
     "@prisma/client": "^6.19.2",
@@ -20,6 +47,7 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.563.0",
     "next": "16.1.6",
+    "next-electron-server": "^1.0.0",
     "prisma": "^6.19.2",
     "react": "19.2.3",
     "react-dom": "19.2.3",
@@ -32,6 +60,9 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "electron": "^40.1.0",
+    "electron-builder": "^26.7.0",
+    "electron-is-dev": "^3.0.1",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",

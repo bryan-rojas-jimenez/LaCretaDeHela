@@ -25,8 +25,10 @@ export function AddSupplierForm() {
     const formData = new FormData(event.currentTarget);
     const data = {
       name: formData.get("name") as string,
-      email: formData.get("email") as string,
       contact: formData.get("contact") as string,
+      email: formData.get("email") as string,
+      address: formData.get("address") as string,
+      taxId: formData.get("taxId") as string,
     };
 
     const result = await createSupplier(data);
@@ -46,25 +48,37 @@ export function AddSupplierForm() {
           <Truck className="h-4 w-4" /> Add Supplier
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Add New Supplier</DialogTitle>
+          <DialogTitle>Add Detailed Supplier Profile</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label htmlFor="name">Company Name</Label>
-            <Input id="name" name="name" placeholder="Acme Corp" required />
+            <Input id="name" name="name" placeholder="Acme Logistics" required />
           </div>
-          <div>
-            <Label htmlFor="contact">Contact Person</Label>
-            <Input id="contact" name="contact" placeholder="Jane Smith" />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="contact">Primary Contact</Label>
+              <Input id="contact" name="contact" placeholder="Manager Name" />
+            </div>
+            <div>
+              <Label htmlFor="email">Business Email</Label>
+              <Input id="email" name="email" type="email" placeholder="sales@acme.com" />
+            </div>
           </div>
-          <div>
-            <Label htmlFor="email">Email Address</Label>
-            <Input id="email" name="email" type="email" placeholder="sales@acme.com" />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="taxId">Tax ID / VAT</Label>
+              <Input id="taxId" name="taxId" placeholder="TAX-99001" />
+            </div>
+            <div>
+              <Label htmlFor="address">Warehouse Address</Label>
+              <Input id="address" name="address" placeholder="456 Supply Way" />
+            </div>
           </div>
           <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700" disabled={loading}>
-            {loading ? "Saving..." : "Save Supplier"}
+            {loading ? "Registering Supplier..." : "Save Supplier Profile"}
           </Button>
         </form>
       </DialogContent>
