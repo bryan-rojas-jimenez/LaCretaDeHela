@@ -35,6 +35,12 @@ To provide a lightweight, scalable, and intuitive platform that bridges the gap 
 - **Filtering:** Narrow down inventory views by specific product categories.
 - **Exporting:** Download filtered inventory data as a CSV file for external reporting or auditing.
 
+### 5.4 Project Management (Workflow Suite)
+- **Project Organization:** Create and manage distinct projects to group related tasks.
+- **Kanban Board:** A visual task board with "To Do", "In Progress", and "Done" columns.
+- **Task Management:** Create tasks with specific priorities (Low, Medium, High, Urgent) and statuses.
+- **Status Progression:** One-click status updates to move tasks through the workflow.
+
 ## 6. User Interface (UX/UI)
 - **Design System:** Professional "Slate" theme with high-contrast typography.
 - **Navigation:** Persistent sidebar for seamless switching between Dashboard and Inventory modules.

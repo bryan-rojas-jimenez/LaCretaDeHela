@@ -6,6 +6,7 @@ InvAnalytics is a full-stack Next.js application designed to provide businesses 
 
 - **Dynamic Dashboard:** Real-time visualization of stock levels, total inventory value, and low-stock alerts.
 - **Inventory Management:** Complete system to track products, manage stock-in/stock-out transactions, and enforce unique SKUs.
+- **Project Management:** Asana/Monday-style Kanban boards to manage business workflows and team tasks.
 - **Advanced Discovery:** Instant search by name/SKU and category-based filtering.
 - **Data Export:** Generate and download CSV reports of your inventory data for external analysis.
 - **Modern UI:** Built with Tailwind CSS and shadcn/ui for a clean, professional, and responsive experience.
