@@ -8,12 +8,12 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Brain, Database, TrendingUp, PieChartIcon } from "lucide-react";
+import { Brain, Database, TrendingUp, PieChartIcon, AlertCircle, Timer } from "lucide-react";
 
 const COLORS = ["#3b82f6", "#8b5cf6", "#ec4899", "#f43f5e", "#f59e0b", "#10b981"];
 
 export function ReportStudio({ data }: { data: any }) {
-  const { inventory, projects, tasks } = data;
+  const { inventory, projects, tasks, forecast } = data;
 
   // BI Logic: Category Value Distribution
   const categoryValueData = useMemo(() => {
@@ -59,10 +59,11 @@ export function ReportStudio({ data }: { data: any }) {
       </div>
 
       <Tabs defaultValue="inventory" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-8 bg-slate-100 p-1 rounded-xl">
+        <TabsList className="grid w-full grid-cols-4 mb-8 bg-slate-100 p-1 rounded-xl">
           <TabsTrigger value="inventory" className="rounded-lg">Inventory Intelligence</TabsTrigger>
           <TabsTrigger value="workflow" className="rounded-lg">Workflow Analytics</TabsTrigger>
           <TabsTrigger value="strategy" className="rounded-lg">Strategic Health</TabsTrigger>
+          <TabsTrigger value="predictive" className="rounded-lg bg-blue-600 text-white data-[state=active]:bg-blue-700">Predictive AI</TabsTrigger>
         </TabsList>
 
         <TabsContent value="inventory" className="space-y-6">
@@ -175,6 +176,68 @@ export function ReportStudio({ data }: { data: any }) {
               </Card>
             ))}
           </div>
+        </TabsContent>
+
+        <TabsContent value="predictive" className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-3">
+            {forecast.slice(0, 6).map((item: any) => (
+              <Card key={item.id} className="relative overflow-hidden border-none shadow-md">
+                <div className={`absolute top-0 left-0 w-full h-1 ${
+                  item.priority === 'URGENT' ? 'bg-rose-500' : item.priority === 'MEDIUM' ? 'bg-amber-500' : 'bg-emerald-500'
+                }`} />
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-bold truncate">{item.name}</CardTitle>
+                  <p className="text-[10px] text-slate-400 font-mono">SKU: {item.sku}</p>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-end justify-between">
+                    <div>
+                      <p className="text-[10px] uppercase font-bold text-slate-400">Burn Rate</p>
+                      <p className="text-lg font-black text-slate-700">{item.burnRate}/day</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] uppercase font-bold text-slate-400">Est. Remaining</p>
+                      <div className="flex items-center gap-1">
+                        <Timer className={`h-4 w-4 ${item.priority === 'URGENT' ? 'text-rose-500' : 'text-slate-400'}`} />
+                        <span className={`text-2xl font-black ${
+                          item.priority === 'URGENT' ? 'text-rose-600' : 'text-slate-900'
+                        }`}>
+                          {item.daysRemaining > 365 ? '∞' : `${item.daysRemaining}d`}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  {item.priority === 'URGENT' && (
+                    <div className="mt-4 p-2 rounded-lg bg-rose-50 border border-rose-100 flex items-center gap-2">
+                      <AlertCircle className="h-3 w-3 text-rose-600" />
+                      <span className="text-[10px] font-bold text-rose-700 uppercase">Restock Required Immediately</span>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <Card className="shadow-lg border-none">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Brain className="h-5 w-5 text-blue-600" />
+                Inventory Depletion Projection (Next 30 Days)
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[350px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={forecast.slice(0, 10)}>
+                    <XAxis dataKey="sku" fontSize={10} axisLine={false} tickLine={false} />
+                    <YAxis fontSize={10} axisLine={false} tickLine={false} />
+                    <Tooltip />
+                    <Area type="monotone" dataKey="daysRemaining" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.1} strokeWidth={3} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

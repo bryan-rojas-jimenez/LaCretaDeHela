@@ -46,13 +46,18 @@ export function AddItemForm() {
       supplierId: formData.get("supplierId") ? parseInt(formData.get("supplierId") as string) : undefined,
     };
 
-    const result = await createInventoryItem(data);
-    setLoading(false);
-
-    if (result.success) {
-      setOpen(false);
-    } else {
-      alert(result.error);
+    try {
+      const result = await createInventoryItem(data);
+      if (result.success) {
+        setOpen(false);
+      } else {
+        alert(result.error);
+      }
+    } catch (error: any) {
+      console.error("Client error adding item:", error);
+      alert("System failure. Check console.");
+    } finally {
+      setLoading(false);
     }
   }
 

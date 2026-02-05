@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "InvAnalytics - Inventory & Data Insights",
   description: "Manage your inventory and visualize data in real-time.",
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({

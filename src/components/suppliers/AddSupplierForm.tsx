@@ -31,13 +31,18 @@ export function AddSupplierForm() {
       taxId: formData.get("taxId") as string,
     };
 
-    const result = await createSupplier(data);
-    setLoading(false);
-
-    if (result.success) {
-      setOpen(false);
-    } else {
-      alert(result.error);
+    try {
+      const result = await createSupplier(data);
+      if (result.success) {
+        setOpen(false);
+      } else {
+        alert(result.error);
+      }
+    } catch (error: any) {
+      console.error("Client-side error adding supplier:", error);
+      alert("A system error occurred. Please check the logs.");
+    } finally {
+      setLoading(false);
     }
   }
 

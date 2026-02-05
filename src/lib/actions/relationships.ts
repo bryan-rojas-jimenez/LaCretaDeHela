@@ -20,13 +20,21 @@ export async function createSupplier(data: {
   address?: string;
   taxId?: string;
 }) {
+  console.log("Starting createSupplier action with data:", data);
   try {
     const supplier = await db.supplier.create({ data });
+    console.log("Supplier created successfully:", supplier.id);
+    
     await logAction("CREATE_SUPPLIER", `Added new supplier: ${data.name}`);
+    console.log("Log action recorded.");
+    
     revalidatePath("/suppliers");
+    console.log("Path revalidated.");
+    
     return { success: true, supplier };
-  } catch (error) {
-    return { success: false, error: "Failed to create supplier" };
+  } catch (error: any) {
+    console.error("CRITICAL ERROR in createSupplier:", error);
+    return { success: false, error: error.message || "Failed to create supplier" };
   }
 }
 
@@ -68,14 +76,22 @@ export async function createCustomer(data: {
   address?: string;
   accountNumber?: string;
 }) {
+  console.log("Starting createCustomer action with data:", data);
   try {
     const customer = await db.customer.create({ data });
+    console.log("Customer created successfully:", customer.id);
+    
     await logAction("CREATE_CUSTOMER", `Added customer: ${data.firstName} ${data.lastName}`);
+    console.log("Log action recorded.");
+    
     revalidatePath("/crm");
+    console.log("Path revalidated.");
+    
     return { success: true, customer };
   } catch (error: any) {
+    console.error("CRITICAL ERROR in createCustomer:", error);
     if (error.code === 'P2002') return { success: false, error: "Account Number already exists" };
-    return { success: false, error: "Failed to create customer" };
+    return { success: false, error: error.message || "Failed to create customer" };
   }
 }
 

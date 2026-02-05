@@ -37,13 +37,18 @@ export function AddInvoiceForm({ customers }: { customers: any[] }) {
       dueDate: new Date(formData.get("dueDate") as string),
     };
 
-    const result = await createInvoice(data);
-    setLoading(false);
-
-    if (result.success) {
-      setOpen(false);
-    } else {
-      alert(result.error);
+    try {
+      const result = await createInvoice(data);
+      if (result.success) {
+        setOpen(false);
+      } else {
+        alert(result.error);
+      }
+    } catch (error: any) {
+      console.error("Client error generating invoice:", error);
+      alert("System failure. Check console.");
+    } finally {
+      setLoading(false);
     }
   }
 

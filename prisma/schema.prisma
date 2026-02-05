@@ -1,148 +1,133 @@
-// InvAnalytics ERP Data Schema
-// This schema manages the relationships between core business entities:
-// Inventory, Sales (CRM/Deals), Procurement, Projects, and Financials.
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-// User & Auth: Manages access levels for the ERP system
 model User {
-  id        Int        @id @default(autoincrement())
-  email     String     @unique
-  password  String
-  role      String     @default("VIEWER") // RBAC: ADMIN, EDITOR, VIEWER
-  logs      AuditLog[]
+  id       Int        @id @default(autoincrement())
+  email    String     @unique
+  password String
+  role     String     @default("VIEWER")
+  logs     AuditLog[]
 }
 
-// Inventory Pro: Core product tracking
 model InventoryItem {
   id           Int           @id @default(autoincrement())
   name         String
-  sku          String        @unique // Enforces unique product identifiers
+  sku          String        @unique
   quantity     Int           @default(0)
   price        Float         @default(0.0)
   category     String
   supplierId   Int?
-  supplier     Supplier?     @relation(fields: [supplierId], references: [id])
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
+  supplier     Supplier?     @relation(fields: [supplierId], references: [id])
   transactions Transaction[]
 }
 
-// Transaction: Tracks every stock movement for audit trails
 model Transaction {
-  id        Int           @id @default(autoincrement())
-  type      String        // "IN" (Stock added) or "OUT" (Stock removed)
-  amount    Int
-  date      DateTime      @default(now())
-  itemId    Int
-  item      InventoryItem @relation(fields: [itemId], references: [id])
+  id     Int           @id @default(autoincrement())
+  type   String
+  amount Int
+  date   DateTime      @default(now())
+  itemId Int
+  item   InventoryItem @relation(fields: [itemId], references: [id])
 }
 
-// Supplier: Vendor management for the Procurement module
 model Supplier {
   id             Int             @id @default(autoincrement())
   name           String
   contact        String?
   email          String?
+  createdAt      DateTime        @default(now())
   address        String?
   taxId          String?
   items          InventoryItem[]
-  files          SupplierFile[]
   purchaseOrders PurchaseOrder[]
-  createdAt      DateTime        @default(now())
+  files          SupplierFile[]
 }
 
-// SupplierFile: Document vault for vendor contracts/records
 model SupplierFile {
   id         Int      @id @default(autoincrement())
   name       String
   path       String
   supplierId Int
-  supplier   Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
+  supplier   Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
 }
 
-// Customer Intelligence: Central CRM entity
 model Customer {
-  id              Int            @id @default(autoincrement())
-  firstName       String?
-  lastName        String?
-  email           String?
-  phone           String?
-  address         String?
-  loyaltyPoints   Int            @default(0)
-  accountNumber   String?        @unique
-  projects        Project[]
-  invoices        Invoice[]
-  deals           Deal[]
-  files           CustomerFile[]
-  createdAt       DateTime       @default(now())
+  id            Int            @id @default(autoincrement())
+  firstName     String?
+  lastName      String?
+  email         String?
+  phone         String?
+  address       String?
+  loyaltyPoints Int            @default(0)
+  accountNumber String?        @unique
+  createdAt     DateTime       @default(now())
+  files         CustomerFile[]
+  deals         Deal[]
+  invoices      Invoice[]
+  projects      Project[]
 }
 
-// Sales Pipeline: Manages lead conversion stages
 model Deal {
-  id          Int      @id @default(autoincrement())
-  title       String
-  value       Float
-  status      String   @default("LEAD") // Pipeline: LEAD -> PROPOSAL -> NEGOTIATION -> WON/LOST
-  customerId  Int
-  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  files       DealFile[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         Int        @id @default(autoincrement())
+  title      String
+  value      Float
+  status     String     @default("LEAD")
+  customerId Int
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  customer   Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  files      DealFile[]
 }
 
-// DealFile: Documents related to specific sales negotiations
 model DealFile {
   id        Int      @id @default(autoincrement())
   name      String
   path      String
   dealId    Int
-  deal      Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+  deal      Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
 }
 
-// Procurement: Inventory replenishment orders
 model PurchaseOrder {
   id          Int      @id @default(autoincrement())
   orderNumber String   @unique
-  status      String   @default("DRAFT") // DRAFT, SENT, RECEIVED, CANCELLED
+  status      String   @default("DRAFT")
   total       Float    @default(0)
   supplierId  Int
-  supplier    Supplier @relation(fields: [supplierId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  supplier    Supplier @relation(fields: [supplierId], references: [id])
 }
 
-// CustomerFile: Documents related to client records (IDs, Contracts)
 model CustomerFile {
   id         Int      @id @default(autoincrement())
   name       String
   path       String
   customerId Int
-  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
 }
 
-// Project Hub: Manages team workflows and Kanban boards
 model Project {
   id          Int           @id @default(autoincrement())
   name        String
   description String?
   color       String        @default("#3b82f6")
   customerId  Int?
-  customer    Customer?     @relation(fields: [customerId], references: [id])
-  tasks       Task[]
-  files       ProjectFile[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+  customer    Customer?     @relation(fields: [customerId], references: [id])
+  files       ProjectFile[]
+  tasks       Task[]
 }
 
 model ProjectFile {
@@ -150,41 +135,39 @@ model ProjectFile {
   name      String
   path      String
   projectId Int
-  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
 model Task {
   id          Int       @id @default(autoincrement())
   title       String
   description String?
-  status      String    @default("TODO") // Kanban states: TODO, IN_PROGRESS, DONE
+  status      String    @default("TODO")
   priority    String    @default("MEDIUM")
   dueDate     DateTime?
-  projectId   Int
-  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  projectId   Int
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
-// Financial Suite: Billing and Revenue tracking
 model Invoice {
-  id          Int      @id @default(autoincrement())
-  number      String   @unique
-  total       Float
-  status      String   @default("UNPAID") // PAID, UNPAID, CANCELLED
-  customerId  Int
-  customer    Customer @relation(fields: [customerId], references: [id])
-  dueDate     DateTime
-  createdAt   DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  number     String   @unique
+  total      Float
+  status     String   @default("UNPAID")
+  customerId Int
+  dueDate    DateTime
+  createdAt  DateTime @default(now())
+  customer   Customer @relation(fields: [customerId], references: [id])
 }
 
-// Audit Log: Immutable record of system-wide activity for transparency
 model AuditLog {
   id        Int      @id @default(autoincrement())
   action    String
   details   String?
   userId    Int?
-  user      User?    @relation(fields: [userId], references: [id])
   timestamp DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
 }

@@ -11,23 +11,12 @@ const prismaClientSingleton = () => {
   
   let dbUrl = process.env.DATABASE_URL;
 
-  // CRITICAL LOGIC: Portable Database Path
-  // When running as a packaged Electron app, we move the SQLite database to the 
-  // user's application data folder. This ensures the database is writable and 
-  // persistent, as the app installation folder is often read-only.
-  if (isElectron && process.env.NODE_ENV === "production") {
-    const { app } = require('electron');
-    const userDataPath = app.getPath('userData');
-    const dbPath = path.join(userDataPath, 'dev.db');
-    dbUrl = `file:${dbPath}`;
-  }
-
-  // Fallback for build-time or non-Electron web environments
   if (!dbUrl) {
-    dbUrl = `file:${path.join(process.cwd(), 'prisma/dev.db')}`;
+    console.warn("⚠️ DATABASE_URL is missing. Please set it in your .env file.");
   }
 
   return new PrismaClient({
+    log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
     datasources: {
       db: {
         url: dbUrl,

@@ -37,13 +37,18 @@ export function CreateDealForm({ customers }: { customers: any[] }) {
       status: formData.get("status") as string,
     };
 
-    const result = await createDeal(data);
-    setLoading(false);
-
-    if (result.success) {
-      setOpen(false);
-    } else {
-      alert(result.error);
+    try {
+      const result = await createDeal(data);
+      if (result.success) {
+        setOpen(false);
+      } else {
+        alert(result.error);
+      }
+    } catch (error: any) {
+      console.error("Client error creating deal:", error);
+      alert("System failure. Check console.");
+    } finally {
+      setLoading(false);
     }
   }
 

@@ -1,17 +1,13 @@
 "use server";
 
-/**
- * INVENTORY ACTIONS
- * These actions handle the core product lifecycle.
- * Pattern:
- * 1. Database operation (Prisma)
- * 2. Audit Logging (for transparency)
- * 3. Cache Revalidation (updates UI in real-time)
- */
-
 import db from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { logAction } from "./audit";
+
+/**
+ * INVENTORY ACTIONS
+ * All actions are wrapped in error boundaries to prevent UI hanging.
+ */
 
 export async function getInventoryItems() {
   try {
@@ -33,6 +29,7 @@ export async function createInventoryItem(formData: {
   category: string;
   supplierId?: number;
 }) {
+  console.log("Inventory Action - Create:", formData);
   try {
     const item = await db.inventoryItem.create({
       data: {
@@ -45,7 +42,7 @@ export async function createInventoryItem(formData: {
       },
     });
 
-    await logAction("CREATE_ITEM", `Created item: ${formData.name} (SKU: ${formData.sku})`);
+    logAction("CREATE_ITEM", `Created item: ${formData.name} (SKU: ${formData.sku})`);
 
     // Create an initial transaction
     await db.transaction.create({
@@ -58,14 +55,16 @@ export async function createInventoryItem(formData: {
 
     revalidatePath("/inventory");
     revalidatePath("/dashboard");
+    revalidatePath("/bi-studio");
     return { success: true, item };
-  } catch (error) {
-    console.error("Failed to create inventory item:", error);
+  } catch (error: any) {
+    console.error("Inventory Creation Error:", error);
     return { success: false, error: "SKU must be unique or data is invalid" };
   }
 }
 
 export async function updateStock(id: number, amount: number, type: "IN" | "OUT") {
+  console.log("Inventory Action - Stock Update:", { id, amount, type });
   try {
     const item = await db.inventoryItem.findUnique({ where: { id } });
     if (!item) throw new Error("Item not found");
@@ -88,13 +87,14 @@ export async function updateStock(id: number, amount: number, type: "IN" | "OUT"
       }),
     ]);
 
-    await logAction("UPDATE_STOCK", `${type} update for ${item.name}: ${amount} units. New Total: ${newQuantity}`);
+    logAction("UPDATE_STOCK", `${type} update for ${item.name}: ${amount} units. New Total: ${newQuantity}`);
 
     revalidatePath("/inventory");
     revalidatePath("/dashboard");
+    revalidatePath("/bi-studio");
     return { success: true };
   } catch (error: any) {
-    console.error("Failed to update stock:", error);
+    console.error("Stock Update Error:", error);
     return { success: false, error: error.message };
   }
 }

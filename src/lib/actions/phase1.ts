@@ -4,26 +4,38 @@ import db from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { logAction } from "./audit";
 
+/**
+ * PHASE 1 ACTIONS (DEALS & PROCUREMENT)
+ * All actions are wrapped in error boundaries to prevent UI hanging.
+ */
+
 // DEALS
 export async function getDeals() {
-  return await db.deal.findMany({
-    include: {
-      customer: { select: { firstName: true, lastName: true } },
-      _count: { select: { files: true } }
-    },
-    orderBy: { updatedAt: "desc" }
-  });
+  try {
+    return await db.deal.findMany({
+      include: {
+        customer: { select: { firstName: true, lastName: true } },
+        _count: { select: { files: true } }
+      },
+      orderBy: { updatedAt: "desc" }
+    });
+  } catch (error) {
+    console.error("Fetch Deals Error:", error);
+    return [];
+  }
 }
 
 export async function createDeal(data: { title: string; value: number; customerId: number; status: string }) {
+  console.log("Creating Deal:", data);
   try {
     const deal = await db.deal.create({ data });
-    await logAction("CREATE_DEAL", `Started new deal: ${data.title} for $${data.value}`);
+    logAction("CREATE_DEAL", `Started new deal: ${data.title} for $${data.value}`);
+    
     revalidatePath("/deals");
     return { success: true, deal };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Deal Creation Error:", error);
-    return { success: false, error: "Failed to create deal" };
+    return { success: false, error: error.message || "Failed to create deal" };
   }
 }
 
@@ -33,62 +45,41 @@ export async function updateDealStatus(id: number, status: string) {
       where: { id },
       data: { status }
     });
-    await logAction("UPDATE_DEAL_STATUS", `Deal #${id} moved to ${status}`);
+    logAction("UPDATE_DEAL_STATUS", `Deal #${id} moved to ${status}`);
+    
     revalidatePath("/deals");
     return { success: true };
   } catch (error) {
-    return { success: false };
-  }
-}
-
-export async function addDealFile(dealId: number, fileName: string) {
-  try {
-    const file = await db.dealFile.create({
-      data: {
-        name: fileName,
-        path: `/uploads/deals/${dealId}/${fileName}`,
-        dealId
-      }
-    });
-    await logAction("UPLOAD_DEAL_FILE", `Uploaded ${fileName} for deal ID: ${dealId}`);
-    revalidatePath("/deals");
-    return { success: true, file };
-  } catch (error) {
-    return { success: false };
+    console.error("Update Deal Error:", error);
+    return { success: false, error: "Failed to update deal status" };
   }
 }
 
 // PURCHASE ORDERS
 export async function getPurchaseOrders() {
-  return await db.purchaseOrder.findMany({
-    include: {
-      supplier: { select: { name: true } }
-    },
-    orderBy: { createdAt: "desc" }
-  });
-}
-
-export async function createPurchaseOrder(data: { orderNumber: string; supplierId: number; total: number }) {
   try {
-    const po = await db.purchaseOrder.create({ data });
-    await logAction("CREATE_PO", `Generated Purchase Order #${data.orderNumber} for $${data.total}`);
-    revalidatePath("/procurement");
-    return { success: true, po };
+    return await db.purchaseOrder.findMany({
+      include: {
+        supplier: { select: { name: true } }
+      },
+      orderBy: { createdAt: "desc" }
+    });
   } catch (error) {
-    return { success: false, error: "Failed to create Purchase Order" };
+    console.error("Fetch POs Error:", error);
+    return [];
   }
 }
 
-export async function updatePOStatus(id: number, status: string) {
+export async function createPurchaseOrder(data: { orderNumber: string; supplierId: number; total: number }) {
+  console.log("Creating PO:", data);
   try {
-    const po = await db.purchaseOrder.update({
-      where: { id },
-      data: { status }
-    });
-    await logAction("UPDATE_PO_STATUS", `Purchase Order #${po.orderNumber} marked as ${status}`);
+    const po = await db.purchaseOrder.create({ data });
+    logAction("CREATE_PO", `Generated PO #${data.orderNumber} for $${data.total}`);
+    
     revalidatePath("/procurement");
-    return { success: true };
-  } catch (error) {
-    return { success: false };
+    return { success: true, po };
+  } catch (error: any) {
+    console.error("PO Creation Error:", error);
+    return { success: false, error: error.message || "Failed to create PO" };
   }
 }

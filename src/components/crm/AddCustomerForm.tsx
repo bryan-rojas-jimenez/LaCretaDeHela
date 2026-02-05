@@ -32,13 +32,18 @@ export function AddCustomerForm() {
       accountNumber: formData.get("accountNumber") as string,
     };
 
-    const result = await createCustomer(data);
-    setLoading(false);
-
-    if (result.success) {
-      setOpen(false);
-    } else {
-      alert(result.error);
+    try {
+      const result = await createCustomer(data);
+      if (result.success) {
+        setOpen(false);
+      } else {
+        alert(result.error);
+      }
+    } catch (error: any) {
+      console.error("Client-side error adding customer:", error);
+      alert("A system error occurred. Please check the logs.");
+    } finally {
+      setLoading(false);
     }
   }
 
