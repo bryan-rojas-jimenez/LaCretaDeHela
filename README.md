@@ -21,7 +21,8 @@ InvAnalytics is a full-stack Next.js application designed to provide businesses 
 - **Framework:** Next.js (App Router)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS + shadcn/ui
-- **Database:** SQLite (managed via Prisma ORM)
+- **Database:** PostgreSQL (Neon.tech Cloud)
+- **ORM:** Prisma
 - **Charts:** Recharts
 - **Icons:** Lucide React
 
@@ -38,25 +39,30 @@ InvAnalytics is a full-stack Next.js application designed to provide businesses 
    npm install
    ```
 
-3. **Database Setup:**
-   Initialize your local SQLite database:
+3. **Environment Setup:**
+   Create a `.env` file based on `.env.example` and add your **Neon.tech PostgreSQL** connection string:
    ```bash
-   npx prisma migrate dev --name init
+   DATABASE_URL="postgresql://user:pass@host/neondb?sslmode=require"
    ```
 
-4. **Run the development server:**
+4. **Database Setup:**
+   Sync your database schema:
+   ```bash
+   npx prisma db push
+   ```
+
+5. **Run the development server:**
    ```bash
    npm run dev
    ```
    Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 📈 Database Migration
+## 📱 Progressive Web App (PWA)
 
-This project uses Prisma, making it easy to switch from the local SQLite database to a production-ready PostgreSQL instance. Simply update the `provider` and `DATABASE_URL` in `prisma/schema.prisma` and run:
-
-```bash
-npx prisma db push
-```
+This application is PWA-ready. You can install it on your mobile device or desktop:
+1. Open the deployed URL in Chrome or Safari.
+2. Tap "Share" or the "Install" icon.
+3. Select "Add to Home Screen".
 
 ## 📄 Documentation
 
