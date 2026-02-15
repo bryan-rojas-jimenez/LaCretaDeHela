@@ -11,8 +11,9 @@ const prismaClientSingleton = () => {
   
   let dbUrl = process.env.DATABASE_URL;
 
-  if (!dbUrl) {
-    console.warn("⚠️ DATABASE_URL is missing. Please set it in your .env file.");
+  // Fallback for build time if DATABASE_URL is missing
+  if (!dbUrl && process.env.NODE_ENV === "production") {
+    dbUrl = "postgresql://dummy:dummy@localhost:5432/dummy";
   }
 
   const options: any = {

@@ -7,9 +7,10 @@
   "author": "Bryan",
   "scripts": {
     "dev": "next dev --webpack",
-    "build": "next build --webpack",
+    "build": "prisma generate && next build --webpack",
     "start": "next start",
     "lint": "eslint",
+    "postinstall": "prisma generate",
     "electron:dev": "electron .",
     "electron:build": "next build && electron-builder"
   },
