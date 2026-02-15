@@ -3,7 +3,8 @@ import { AddExpenseForm } from "@/components/expenses/AddExpenseForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Receipt, Calendar, Info, DollarSign } from "lucide-react";
+import { Receipt, Calendar, Info, DollarSign, Tag } from "lucide-react";
+import { EntityFiles } from "@/components/relationships/EntityFiles";
 
 export const dynamic = "force-dynamic";
 
