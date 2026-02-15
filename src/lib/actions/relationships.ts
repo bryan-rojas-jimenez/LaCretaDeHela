@@ -38,12 +38,12 @@ export async function createSupplier(data: {
   }
 }
 
-export async function addSupplierFile(supplierId: number, fileName: string) {
+export async function addSupplierFile(supplierId: number, fileName: string, fileData: string) {
   try {
     const file = await db.supplierFile.create({
       data: {
         name: fileName,
-        path: `/uploads/suppliers/${supplierId}/${fileName}`,
+        path: fileData, // In a real app, upload to S3/Blob and store URL. Here we store Base64.
         supplierId
       }
     });
@@ -95,12 +95,12 @@ export async function createCustomer(data: {
   }
 }
 
-export async function addCustomerFile(customerId: number, fileName: string) {
+export async function addCustomerFile(customerId: number, fileName: string, fileData: string) {
   try {
     const file = await db.customerFile.create({
       data: {
         name: fileName,
-        path: `/uploads/customers/${customerId}/${fileName}`,
+        path: fileData,
         customerId
       }
     });

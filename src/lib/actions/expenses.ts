@@ -41,12 +41,12 @@ export async function createExpense(data: {
   }
 }
 
-export async function addExpenseFile(expenseId: number, fileName: string) {
+export async function addExpenseFile(expenseId: number, fileName: string, fileData: string) {
   try {
     const file = await db.expenseFile.create({
       data: {
         name: fileName,
-        path: `/uploads/expenses/${expenseId}/${fileName}`,
+        path: fileData, // Stores Base64
         expenseId
       }
     });
