@@ -2,6 +2,8 @@ import { getBIRawData } from "@/lib/actions/bi";
 import { ReportStudio } from "@/components/bi/ReportStudio";
 import { Skeleton } from "@/components/ui/skeleton";
 
+export const dynamic = "force-dynamic";
+
 export default async function BIStudioPage() {
   const data = await getBIRawData();
 

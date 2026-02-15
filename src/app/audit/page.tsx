@@ -3,6 +3,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { History, User, Clock, Info } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function AuditLogPage() {
   const logs = await getAuditLogs();
 

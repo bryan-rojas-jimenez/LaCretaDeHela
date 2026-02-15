@@ -15,14 +15,19 @@ const prismaClientSingleton = () => {
     console.warn("⚠️ DATABASE_URL is missing. Please set it in your .env file.");
   }
 
-  return new PrismaClient({
+  const options: any = {
     log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
-    datasources: {
+  };
+
+  if (dbUrl) {
+    options.datasources = {
       db: {
         url: dbUrl,
       },
-    },
-  });
+    };
+  }
+
+  return new PrismaClient(options);
 };
 
 declare global {

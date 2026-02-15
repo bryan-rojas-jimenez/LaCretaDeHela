@@ -1,9 +1,11 @@
 import { getExpenses } from "@/lib/actions/expenses";
 import { AddExpenseForm } from "@/components/expenses/AddExpenseForm";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { EntityFiles } from "@/components/relationships/EntityFiles";
 import { Badge } from "@/components/ui/badge";
-import { Banknote, Calendar, Tag, FileText } from "lucide-react";
+import { Receipt, Calendar, Info, DollarSign } from "lucide-react";
+
+export const dynamic = "force-dynamic";
 
 export default async function ExpensesPage() {
   const expenses = await getExpenses();

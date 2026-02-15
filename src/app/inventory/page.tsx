@@ -2,6 +2,8 @@ import { getInventoryItems } from "@/lib/actions/inventory";
 import { InventoryTable } from "@/components/inventory/InventoryTable";
 import { AddItemForm } from "@/components/inventory/AddItemForm";
 
+export const dynamic = "force-dynamic";
+
 export default async function InventoryPage() {
   const items = await getInventoryItems();
 
