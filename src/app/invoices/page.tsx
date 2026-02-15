@@ -5,6 +5,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Receipt, Calendar, User, DollarSign } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function InvoicesPage() {
   const invoices = await getInvoices();
   const customers = await getCustomers();
