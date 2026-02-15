@@ -11,7 +11,8 @@ import {
   History,
   TrendingUp,
   ShoppingCart,
-  Maximize
+  Maximize,
+  Wallet
 } from "lucide-react";
 
 export function Navbar() {
@@ -26,13 +27,14 @@ export function Navbar() {
     { href: "/crm", label: "CRM", icon: Users },
     { href: "/suppliers", label: "Suppliers", icon: Truck },
     { href: "/invoices", label: "Invoices", icon: Receipt },
+    { href: "/expenses", label: "Expenses", icon: Wallet },
     { href: "/audit", label: "Audit Log", icon: History },
   ];
 
   return (
-    <div className="hidden border-r bg-slate-900 md:block w-[240px] h-screen text-slate-300">
+    <div className="hidden border-r bg-slate-900 md:block w-[240px] h-screen text-slate-300 overflow-hidden">
       <div className="flex h-full max-h-screen flex-col gap-2">
-        <div className="flex h-14 items-center border-b border-slate-800 px-6">
+        <div className="flex h-14 items-center border-b border-slate-800 px-6 shrink-0">
           <Link href="/" className="flex items-center gap-2 font-bold text-white">
             <Package2 className="h-6 w-6 text-blue-500" />
             <span>InvAnalytics <span className="text-[10px] bg-blue-500 text-white px-1 rounded ml-1">ERP</span></span>

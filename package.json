@@ -6,7 +6,7 @@
   "description": "InvAnalytics - Modern ERP & Business Intelligence Suite",
   "author": "Bryan",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Download, Upload, Paperclip } from "lucide-react";
 import { addCustomerFile, addSupplierFile } from "@/lib/actions/relationships";
+import { addExpenseFile } from "@/lib/actions/expenses";
 
 interface FileItem {
   id: number;
@@ -18,7 +19,7 @@ export function EntityFiles({
   initialFiles 
 }: { 
   entityId: number, 
-  entityType: 'customer' | 'supplier',
+  entityType: 'customer' | 'supplier' | 'expense',
   initialFiles: FileItem[] 
 }) {
   const [files, setFiles] = useState(initialFiles);
@@ -32,8 +33,10 @@ export function EntityFiles({
     let result;
     if (entityType === 'customer') {
       result = await addCustomerFile(entityId, fileName);
-    } else {
+    } else if (entityType === 'supplier') {
       result = await addSupplierFile(entityId, fileName);
+    } else {
+      result = await addExpenseFile(entityId, fileName);
     }
     setUploading(false);
 
